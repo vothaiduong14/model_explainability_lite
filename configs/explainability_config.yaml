@@ -1,0 +1,61 @@
+run_id: null
+
+paths:
+  model_file: artifacts/my_model.ubj
+  scoring_data_file: data/oot_dataset.parquet
+  ranking_score_file: null
+  feature_list_file: null
+  metadata_excel_file: model_explainability_lite/metadata/explainability_metadata.xlsx
+  calibration_file: null
+  output_root: model_explainability_lite/outputs
+
+dataset:
+  id_column: transaction_id
+  score_ts_column: txn_timestamp
+  label_column: label
+  segment_columns:
+    - channel
+    - customer_tier
+  allow_duplicate_ids: false
+  allow_extra_columns: true
+
+sampling:
+  scoring_chunk_rows: 250000
+  shap_chunk_size: 20000
+  global_sample_size: 50000
+  global_top_score_percentile: 0.01
+  include_all_positive_labels_in_global: true
+  dependence_top_n: 5
+  random_seed: 42
+
+  ### To export top 10 scored explanation config
+  # local_top_score_rows: 10000
+  # local_max_rows: 10000
+  # local_non_alert_sample_size: 500
+  # include_all_alerts_in_local: true
+  # include_all_positive_labels_in_local: true
+  # dependence_top_n: 5
+  # random_seed: 42
+
+  ### To export fraud only
+  local_top_score_rows: 0
+  local_max_rows: 10000
+  local_non_alert_sample_size: 0
+  include_all_alerts_in_local: false
+  include_all_positive_labels_in_local: true
+
+
+scoring:
+  model_version: my_model_v1
+  score_scale: 0_1000
+  alert_probability_threshold: 0.5
+  ranking_score_column: null
+  ranking_score_id_column: null
+  top_n_reasons: 5
+  top_n_negative_reasons: 2
+
+validation:
+  null_warning_threshold: 0.8
+  shap_reconstruction_tolerance: 0.0001
+  required_metadata_tabs:
+    - feature_dictionary
